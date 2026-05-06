@@ -4445,11 +4445,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteriaV3\\ProyectoCafeteria2\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
+      "projectUniqueName": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
       "projectName": "Cafeteria",
-      "projectPath": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteriaV3\\ProyectoCafeteria2\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
+      "projectPath": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
       "packagesPath": "C:\\Users\\mega9\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteriaV3\\ProyectoCafeteria2\\ProyectoCafeteria\\Cafeteria\\obj\\",
+      "outputPath": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteria\\Cafeteria\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\mega9\\AppData\\Roaming\\NuGet\\NuGet.Config"

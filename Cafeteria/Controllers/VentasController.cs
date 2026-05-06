@@ -17,16 +17,15 @@ public class VentasController : ControllerBase
         _context = context;
     }
 
-    [HttpPost("generar")]
-    public async Task<IActionResult> GenerarVenta([FromBody] GenerarVentaInput input)
+    [HttpPost("GenerarVenta")]
+    public async Task<ActionResult<GenerarVentaOutput>> GenerarVenta([FromBody] GenerarVentaInput Output)
     {
-        //  Buscar Cliente
+        // USAMOS 'Output' (la instancia), NO 'GenerarVentaInput' (la clase)
         var cliente = await _context.Clientes
-            .FirstOrDefaultAsync(c => c.Ci == input.ClienteCi);
+            .FirstOrDefaultAsync(c => c.Ci == Output.ClienteCi);
         
         if (cliente == null) return NotFound("Cliente no encontrado.");
 
-        //  Crear la entidad Venta
         var nuevaVenta = new Venta
         {
             Id = Guid.NewGuid(),
@@ -39,7 +38,8 @@ public class VentasController : ControllerBase
         decimal totalAcumulado = 0;
         var listaDetallesOutput = new List<DetalleVentaResumen>();
 
-        foreach (var item in input.Detalles)
+        // CAMBIADO: GenerarVentaInput -> Output
+        foreach (var item in Output.Detalles)
         {
             var producto = await _context.Productos
                 .FirstOrDefaultAsync(p => p.Nombre == item.NombreProducto);
@@ -50,21 +50,19 @@ public class VentasController : ControllerBase
             if (producto.Stock < item.Cantidad)
                 return BadRequest($"Stock insuficiente para {producto.Nombre}. Stock actual: {producto.Stock}");
 
-            //  Crear entidad DetalleVenta
             var detalleEntidad = new DetalleVenta
             {
                 Id = Guid.NewGuid(),
                 Cantidad = item.Cantidad,
                 PrecioUnitario = producto.Precio,
-                VentaId = nuevaVenta.Id,
+                VentaId = nuevaVenta.Id,    
                 ProductoId = producto.Id,
                 Venta = nuevaVenta, 
                 Producto = producto 
             };
 
-            //  Lógica de Stock y Total
             producto.Stock -= item.Cantidad;
-            totalAcumulado += (detalleEntidad.PrecioUnitario * detalleEntidad.Cantidad);
+            totalAcumulado += detalleEntidad.PrecioUnitario * detalleEntidad.Cantidad;
 
             listaDetallesOutput.Add(new DetalleVentaResumen
             {

@@ -10,6 +10,5 @@ public class Venta
 
     public Guid ClienteId { get; set; }
     public Guid? Descuentoid {get;set;}
-    public Descuentos? Descuento {get;set;}
     public required Cliente Cliente { get; set; }
 }

@@ -1,5 +1,8 @@
 using Cafeteria.Data;
 using Cafeteria.DTOs;
+using Cafeteria.DTOs.Categoria.ActualizarCategoria;
+using Cafeteria.DTOs.Categoria.CrearCategoria;
+using Cafeteria.DTOs.Categoria.EliminarCategoria;
 using Cafeteria.Entidades;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +22,7 @@ namespace Cafeteria.Controllers
         }
 
         // GET: api/categorias
-        [HttpGet]
+        [HttpGet("ListaDeCategorias")]
         public async Task<ActionResult<IEnumerable<ObtenerCategoriaDTO>>> GetCategorias()
         {
             var categorias = await _contexto.Categorias
@@ -34,7 +37,7 @@ namespace Cafeteria.Controllers
         }
 
         // GET: api/categorias/{id}
-        [HttpGet("{id}")]
+        [HttpGet("ObtenerCategoria")]
         public async Task<ActionResult<ObtenerCategoriaDTO>> GetCategoria(Guid id) // Cambiado a CategoriaDTO
         {
             var categoria = await _contexto.Categorias
@@ -55,39 +58,50 @@ namespace Cafeteria.Controllers
         }
 
         // POST: api/categorias
-        [HttpPost]
-        public async Task<ActionResult<Categoria>> CreateCategoria([FromBody] Categoria categoria)
+        [HttpPost("AgregarCategoria")]
+        public async Task<ActionResult<CrearCategoriaOutput>> CreateCategoria([FromBody] CrearCategoriaInput categoria)
         {
-            _contexto.Categorias.Add(categoria);
-            await _contexto.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetCategoria), new { id = categoria.Id }, categoria);
+            var entrada = new Categoria
+            {
+                Id = Guid.NewGuid(),
+                Nombre = categoria.Nombre
+            };
+
+            _contexto.Categorias.Add(entrada);
+             await _contexto.SaveChangesAsync();
+
+            var salida = new CrearCategoriaOutput
+            {
+                Id = entrada.Id,
+                Nombre = entrada.Nombre
+            };
+
+            return CreatedAtAction(nameof(CreateCategoria), new { id = salida.Id }, salida);
         }
 
         // PUT: api/categorias/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategoria(Guid id, [FromBody] Categoria categoria)
+        [HttpPut("ActualizarCategoria")]
+        public async Task<ActionResult<ActualizarCategoriaOutput>> UpdateCategoria(Guid id, [FromBody] ActualizarCategoriaInput categoria)
         {
             if (id != categoria.Id) return BadRequest("El ID no coincide.");
 
             var existing = await _contexto.Categorias.FindAsync(id);
             if (existing == null) return NotFound();
 
-            existing.Nombre = categoria.Nombre;
+            var entrada = new Categoria
+            {
+                Id = id,
+                Nombre = categoria.Nombre
+            };
 
             await _contexto.SaveChangesAsync();
-            return NoContent();
-        }
 
-        // DELETE: api/categorias/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategoria(Guid id)
-        {
-            var categoria = await _contexto.Categorias.FindAsync(id);
-            if (categoria == null) return NotFound();
-
-            _contexto.Categorias.Remove(categoria);
-            await _contexto.SaveChangesAsync();
-            return NoContent();
+            var salida = new ActualizarCategoriaOutput
+            {
+                Id = entrada.Id,
+                Nombre = entrada.Nombre
+            };
+            return CreatedAtAction(nameof(UpdateCategoria), new { id = salida.Id }, salida);
         }
     }
 }

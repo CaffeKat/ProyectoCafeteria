@@ -18,7 +18,7 @@ namespace Cafeteria.Controllers
             _contexto = contexto;
         }
 
-        [HttpGet]
+        [HttpGet("ListaDeClientes")]
         public async Task<ActionResult<ICollection<ObtenerCliente>>> GetClientes()
         {
             var clientes = await _contexto.Clientes
@@ -33,7 +33,7 @@ namespace Cafeteria.Controllers
             return Ok(clientes);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("ObtenerCliente")]
         public async Task<ActionResult<Cliente>> GetCliente(Guid id)
         {
             var cliente = await _contexto.Clientes.FindAsync(id);
@@ -41,20 +41,16 @@ namespace Cafeteria.Controllers
             return Ok(cliente);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AgregarClienteInput>> CreateCliente([FromBody] AgregarClienteOutput cliente)
+        [HttpPost("AgregarCliente")]
+        public async Task<ActionResult<AgregarClienteOutput>> CreateCliente([FromBody] AgregarClienteInput cliente)
         {
             var entrada = new Cliente
             {
+                Id = Guid.NewGuid(),
                 Ci = cliente.Ci,
                 Extension = cliente.Extension,
                 Nombre = cliente.Nombre
             };
-
-            entrada.Id = Guid.NewGuid();
-            entrada.FechaCreacion = DateTime.Now;
-            entrada.FechaUltimaModificacion = DateTime.Now;
-            entrada.EsClientePorDefecto = false;
 
              _contexto.Clientes.Add(entrada);
             await _contexto.SaveChangesAsync();
@@ -70,7 +66,7 @@ namespace Cafeteria.Controllers
             return CreatedAtAction(nameof(GetCliente), new { id = salida.Id }, salida);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("ActualizarCliente")]
         public async Task<IActionResult> UpdateCliente(Guid id, [FromBody] Cliente cliente)
         {
             if (id != cliente.Id) return BadRequest();
@@ -82,17 +78,6 @@ namespace Cafeteria.Controllers
             existing.Ci = cliente.Ci;
             existing.Extension = cliente.Extension;
 
-            await _contexto.SaveChangesAsync();
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCliente(Guid id)
-        {
-            var cliente = await _contexto.Clientes.FindAsync(id);
-            if (cliente == null) return NotFound();
-
-            _contexto.Clientes.Remove(cliente);
             await _contexto.SaveChangesAsync();
             return NoContent();
         }

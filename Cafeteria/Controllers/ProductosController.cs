@@ -1,7 +1,6 @@
 using Cafeteria.Data;
-using Cafeteria.DTOs;
+using Cafeteria.DTOs.Producto;
 using Cafeteria.Entidades;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,22 +17,23 @@ namespace Cafeteria.Controllers
             _contexto = contexto;
         }
 
-        [HttpGet]
+        [HttpGet("ListaDeProductos")]
         public async Task<ActionResult<ICollection<ProductoDTO>>> GetProductos()
         {
             var productos = await _contexto.Productos
                 .Include(p => p.Categoria)
-                .Select(p => new ProductoDTO // Aquí hacemos la transformación manual
+                .Select(p => new ProductoDTO
                 {
                     Nombre = p.Nombre,
                     Precio = p.Precio,
-                    CategoriaNombre = p.Categoria != null ? p.Categoria.Nombre : "Sin Categoría"
+                    Stock = p.Stock,
+                    CategoriaNombre = p.Categoria != null ? p.Categoria.Nombre : "Sin categoría"
                 })
                 .ToListAsync();
 
             return Ok(productos);
         }
-        [HttpPost]
+        [HttpPost("AgregarProducto")]
         public async Task<ActionResult<Producto>> CreateProducto([FromBody] Producto producto)
         {
             _contexto.Productos.Add(producto);
@@ -41,7 +41,7 @@ namespace Cafeteria.Controllers
             return CreatedAtAction(nameof(GetProductos), new { id = producto.Id }, producto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("ActualizarProducto")]
         public async Task<IActionResult> UpdateProducto(Guid id, [FromBody] Producto producto)
         {
             if (id != producto.Id) return BadRequest();
@@ -51,6 +51,7 @@ namespace Cafeteria.Controllers
 
             existing.Nombre = producto.Nombre;
             existing.Precio = producto.Precio;
+            existing.Stock = producto.Stock;    
             existing.CategoriaId = producto.CategoriaId;
 
             await _contexto.SaveChangesAsync();

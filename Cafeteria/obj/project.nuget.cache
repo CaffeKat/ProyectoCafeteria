@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tUMUI5gKGe8=",
+  "dgSpecHash": "KL6jvVRDptM=",
   "success": true,
-  "projectFilePath": "c:\\Users\\mega9\\Downloads\\ProyectoCafeteriaV3\\ProyectoCafeteria2\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
+  "projectFilePath": "C:\\Users\\mega9\\Downloads\\ProyectoCafeteria\\Cafeteria\\Cafeteria.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mega9\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\mega9\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
